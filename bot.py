@@ -31,6 +31,10 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "PUT-YOUR-TOKEN-HERE")
 # حداکثر حجم فایلی که تلگرام اجازه ارسال می‌دهد (برای ربات معمولی ۵۰ مگابایت)
 MAX_FILE_SIZE_MB = 49
 
+# مسیر فایل کوکی (اختیاری) برای دور زدن محدودیت "sign in to confirm you're not a bot" یوتیوب
+# نحوه ساختش تو README توضیح داده شده
+COOKIES_FILE = os.environ.get("COOKIES_FILE", "cookies.txt")
+
 YOUTUBE_RE = re.compile(r"(youtube\.com|youtu\.be)", re.IGNORECASE)
 TWITTER_RE = re.compile(r"(twitter\.com|x\.com)", re.IGNORECASE)
 INSTAGRAM_RE = re.compile(r"instagram\.com", re.IGNORECASE)
@@ -104,10 +108,10 @@ async def process_download(message, url: str, platform: str, audio_only: bool = 
 
     tmp_dir = tempfile.mkdtemp(prefix="dl_")
     try:
-        filepath = await download_with_ytdlp(url, tmp_dir, audio_only=audio_only)
+        filepath, error = await download_with_ytdlp(url, tmp_dir, audio_only=audio_only)
 
         if filepath is None:
-            await status.edit_text("❌ دانلود انجام نشد. لینک رو چک کن یا دوباره امتحان کن.")
+            await status.edit_text(f"❌ دانلود انجام نشد.\n\nجزئیات خطا:\n{error}")
             return
 
         size_mb = os.path.getsize(filepath) / (1024 * 1024)
@@ -142,6 +146,10 @@ async def download_with_ytdlp(url: str, out_dir: str, audio_only: bool = False):
         "no_warnings": True,
         "noplaylist": True,
     }
+
+    # اگه فایل کوکی موجود باشه (برای دور زدن محدودیت ربات‌دیتکشن یوتیوب) ازش استفاده کن
+    if os.path.exists(COOKIES_FILE):
+        ydl_opts["cookiefile"] = COOKIES_FILE
 
     if audio_only:
         ydl_opts.update(
@@ -178,10 +186,11 @@ async def download_with_ytdlp(url: str, out_dir: str, audio_only: bool = False):
 
     loop = asyncio.get_event_loop()
     try:
-        return await loop.run_in_executor(None, _run)
-    except Exception:
+        filename = await loop.run_in_executor(None, _run)
+        return filename, None
+    except Exception as e:
         logger.exception("yt-dlp failed")
-        return None
+        return None, str(e)
 
 
 def main():
