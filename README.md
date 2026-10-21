@@ -12,7 +12,6 @@
 - تشخیص خودکار نوع فایل (عکس یا ویدیو) و ارسال متناسب با همون فرمت
 - بدون نیاز به دیتابیس یا زیرساخت پیچیده
 - قابل اجرا هم روی سیستم شخصی، هم روی سرویس‌های رایگان مثل Railway
-- پشتیبانی از فایل کوکی برای پست‌های محدودشده (اختیاری)
 
 ## 🧰 تکنولوژی‌ها
 
@@ -26,8 +25,8 @@
 
 ### ۱. کلون کردن ریپو
 ```bash
-git clone https://github.com/USERNAME/REPO-NAME.git
-cd REPO-NAME
+git clone https://github.com/abolf8zl1/downloaderbot.git
+cd downloaderbot
 ```
 
 ### ۲. نصب پیش‌نیازها
@@ -69,17 +68,6 @@ python bot.py
 3. تو تب **Variables**، متغیر `BOT_TOKEN` رو با توکن ربات‌ت ست کن.
 4. Railway خودکار build و deploy می‌کنه.
 
----
-
-## 🍪 دانلود پست‌های محدود یا خصوصی (اختیاری)
-
-بعضی پست‌ها نیاز به لاگین دارن. برای این موارد:
-
-1. اکستنشن [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) رو نصب کن.
-2. وارد اینستاگرام شو (لاگین باش).
-3. فایل `cookies.txt` رو دانلود و کنار `bot.py` قرار بده.
-
-> ⚠️ **هشدار امنیتی:** فایل `cookies.txt` اطلاعات نشست اکانت شخصی شماست. این فایل در `.gitignore` قرار داده شده و **هرگز نباید** به ریپوی پابلیک push بشه.
 
 ---
 
